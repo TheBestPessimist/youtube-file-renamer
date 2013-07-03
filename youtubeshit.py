@@ -5,15 +5,17 @@ Created on 30.09.2012
 @author: The Best Pessimist
 '''
 
-#===============================================================================
+#-------------------------------------------------------------------------------
 # script used for renaming files downloaded with jdownloader 2 from youtube.
 # it takes the files and moves them to a "renamed" folder if succesfull rename
 # or leaves them untouched if nothing could be done (actually no, it does not do that :P)
-#===============================================================================
+#-------------------------------------------------------------------------------
 
 import os
 import shutil
 import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 # redirect stdout
 # sys.stdout = open(os.path.normpath('C:\Users\CristianViorel\Desktop\output.txt'), 'w')
