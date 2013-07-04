@@ -21,29 +21,36 @@ sys.setdefaultencoding("utf-8")
 # sys.stdout = open(os.path.normpath('C:\Users\CristianViorel\Desktop\output.txt'), 'w')
 
 
+def findIndexToDelete(oldFileName):
+	indexToDelete = oldFileName.rfind('(108')
+   if indexToDelete == -1 :
+       indexToDelete = oldFileName.rfind('(720')
+   if indexToDelete == -1 :
+       indexToDelete = oldFileName.rfind('(480')
+   if indexToDelete == -1:
+       indexToDelete = oldFileName.rfind('(360')
+   if indexToDelete == -1 :
+       indexToDelete = oldFileName.rfind('(240')            
+   if indexToDelete == -1 :
+       indexToDelete = oldFileName.rfind('-[www')
+   return indexToDelete
+
+
 def renameThem():
+	
 #    path = os.path.normpath(u"c:\\Users\\CristianViorel\\Desktop\\muzic\\noi noi\\")
     path = os.path.normpath("D:\Users\TheBestPessimist\Desktop\music\\")
     newPath = os.path.normpath("D:\Users\TheBestPessimist\Desktop\youtube\\")
+    
     counter = 0;
     renameErrorIndex = 0        
+   
     for dirPath, dirNames, fileNames in os.walk(path):
         filesFullPath = [os.path.join(dirPath, name) for name in fileNames]
         for oldFileName in filesFullPath:
         
-            indexToDelete = oldFileName.rfind('(108')
-            if indexToDelete == -1 :
-                indexToDelete = oldFileName.rfind('(720')
-            if indexToDelete == -1 :
-                indexToDelete = oldFileName.rfind('(480')
-            if indexToDelete == -1:
-                indexToDelete = oldFileName.rfind('(360')
-            if indexToDelete == -1 :
-                indexToDelete = oldFileName.rfind('(240')            
-            if indexToDelete == -1 :
-                indexToDelete = oldFileName.rfind('-[www')
-            if indexToDelete != -1 :
-                
+				indexToDelete = findIndexToDelete(oldFileName)                
+			   if indexToDelete != -1 :
                 counter += 1;
                 extension = (os.path.splitext(oldFileName))[1]
                 
@@ -53,13 +60,13 @@ def renameThem():
                 
                 index = auxFileName.rfind('\\')
                 newFileName = os.path.normpath(os.path.join(newPath + auxFileName[index:]))
+
                 print counter,
                 print auxFileName
                 print newFileName
                 print "\n" 
+
                 try:
-                    
-#                    pass
 #                    newPath = findNewPath(newFileName)
                     if not os.path.exists(os.path.normpath(newPath)):
                         print 'tibi'
@@ -87,7 +94,7 @@ def renameThem():
         print 'Had some errors. about ', renameErrorIndex, ' of them :('
 
     print counter
-#===============================================================================
-#     VVVV      main starts here     VVVV
-#===============================================================================
-renameThem()
+    
+    
+if __name__ == '__main__':
+	renameThem()
