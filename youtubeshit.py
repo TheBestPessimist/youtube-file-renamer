@@ -18,8 +18,6 @@ import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-# redirect stdout
-# sys.stdout = open(os.path.normpath('C:\Users\CristianViorel\Desktop\output.txt'), 'w')
 
 
 def findIndexToDelete(oldFileName):
@@ -42,6 +40,10 @@ def renameThem():
 	path = os.path.normpath(u"D:/zzmusic/a/")
 	newPath = os.path.normpath(u"C:/Users/TheBestPessimist/Desktop/youtube/")
 
+	if not os.path.exists(newPath):
+		print 'New path does not exist, creating...'
+		os.makedirs(newPath)
+		
 	songCounter = 0;
 	renameErrorIndex = 0        
 	filesFullPath = []
@@ -66,29 +68,24 @@ def renameThem():
 			print auxFileName
 			print newFilePath
 			print "\n" 
-			'''
-			try:
-			#                    newPath = findNewPath(newFilePath)
-				if not os.path.exists(os.path.normpath(newPath)):
-					print 'tibi'
-					os.makedirs(os.path.dirname(newPath))
-				#                        
-				shutil.copy2(oldFilePath, newFilePath)  # this usually throws me a duplicate
+			
+            
+			shutil.copy2(oldFilePath, newFilePath)  # this usually throws me a duplicate
 #                     shutil.copy2(newFilePath, newPath)
 #                    print 'old file name: ' + oldFilePath.encode('utf-8', 'replace')
 #                    print 'renamed file: ', newFilePath.encode('utf-8', 'replace')
 # #                    if os.path.isfile(newFilePath):
 # #                        os.remove(newFilePath)
-			except Exception, e:
-				print e
+			# except Exception, e:
+			# 	print e
 #                    if os.path.isfile(oldFilePath):
 #                        print 'Possible duplicate: ', oldFilePath.encode('utf-8', 'replace')
 #                        os.remove(oldFilePath)
-				renameErrorIndex = renameErrorIndex + 1
+			renameErrorIndex = renameErrorIndex + 1
 #                    print 'Error ', renameErrorIndex, '. ', oldFilePath.encode('utf-8', 'replace')
 #                    pass
 
-			'''
+#			'''
 	if not renameErrorIndex:
 		print "Success!"
 	else:
@@ -98,4 +95,6 @@ def renameThem():
 	  
 	  
 if __name__ == '__main__':
-	 renameThem()
+	# redirect stdout
+	# sys.stdout = open(os.path.normpath('C:\Users\CristianViorel\Desktop\output.txt'), 'w')
+	renameThem()
