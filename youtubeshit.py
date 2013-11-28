@@ -1,4 +1,3 @@
-
 '''
 Created on 30.09.2012
 
@@ -7,94 +6,72 @@ Created on 30.09.2012
 
 #-------------------------------------------------------------------------------
 # script used for renaming files downloaded with jdownloader 2 from youtube.
-# it takes the files and moves them to a "renamed" folder if succesfull rename
-# or leaves them untouched if nothing could be done (actually no, it does not
-# do that just yet :P)
-#-------------------------------------------------------------------------------
+# it takes the files and moves them to a specified folder.
+# use linux style folder delimiters ('/' and not '\\')
+#-------------------------------------------------------------------------
 
 import os
 import shutil
 import sys
+# to force using utf8
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
 
+def findNewFileName(oldFileName):
+    indexToDelete = oldFileName.rfind('(108')
+    if indexToDelete == -1:
+        indexToDelete = oldFileName.rfind('(720')
+    if indexToDelete == -1:
+        indexToDelete = oldFileName.rfind('(480')
+    if indexToDelete == -1:
+        indexToDelete = oldFileName.rfind('(360')
+    if indexToDelete == -1:
+        indexToDelete = oldFileName.rfind('(240')
+    if indexToDelete == -1:
+        indexToDelete = oldFileName.rfind('-[www')  # not used anymore
 
-def findIndexToDelete(oldFileName):
-	indexToDelete = oldFileName.rfind('(108')
-	if indexToDelete == -1 :
-		indexToDelete = oldFileName.rfind('(720')
-	if indexToDelete == -1 :
-		indexToDelete = oldFileName.rfind('(480')
-	if indexToDelete == -1:
-		indexToDelete = oldFileName.rfind('(360')
-	if indexToDelete == -1 :
-		indexToDelete = oldFileName.rfind('(240')            
-	if indexToDelete == -1 :
-		indexToDelete = oldFileName.rfind('-[www')
-	return indexToDelete
+    # if found a new name to edit
+    extension = (os.path.splitext(oldFileName))[1]
+    newFileName = oldFileName[:indexToDelete] + extension
+    return newFileName
 
 
-def renameThem():
-	# path = os.path.normpath("D:\Users\TheBestPessimist\Desktop\music\\")
-	path = os.path.normpath(u"D:/zzmusic/a/")
-	newPath = os.path.normpath(u"C:/Users/TheBestPessimist/Desktop/youtube/")
+def renameThem(path, newPath):
+    
+    if not os.path.exists(newPath):
+        print 'New path does not exist, creating...'
+        os.makedirs(newPath)
 
-	if not os.path.exists(newPath):
-		print 'New path does not exist, creating...'
-		os.makedirs(newPath)
-		
-	songCounter = 0;
-	renameErrorIndex = 0        
-	filesFullPath = []
+    songCounter = 0
+    filesFullPath = []
 
-	for dirPath, dirNames, fileNames in os.walk(path):
-		filesFullPath += [os.path.join(dirPath, name) for name in fileNames]
-		
-	for oldFilePath in filesFullPath:
-		# print songCounter, oldFilePath
+    for dirPath, dirNames, fileNames in os.walk(path):
+        filesFullPath += [os.path.join(dirPath, name) for name in fileNames]
 
-		oldFileName = os.path.basename(oldFilePath)
-		indexToDelete = findIndexToDelete(oldFileName)                
-		
-		# if found a new name to edit
-		if indexToDelete != -1:
-			songCounter += 1;
-			extension = (os.path.splitext(oldFileName))[1]
-			auxFileName = oldFileName[:indexToDelete] + extension
-			newFilePath = os.path.join(newPath, auxFileName)
+    for oldFilePath in filesFullPath:
+        songCounter += 1
+        oldFileName = os.path.basename(oldFilePath)
+        newFileName = findNewFileName(oldFileName)
+        newFilePath = os.path.join(newPath, newFileName)
 
-			print songCounter, oldFilePath
-			print auxFileName
-			print newFilePath
-			print "\n" 
-			
-            
-			shutil.copy2(oldFilePath, newFilePath)  # this usually throws me a duplicate
-#                     shutil.copy2(newFilePath, newPath)
-#                    print 'old file name: ' + oldFilePath.encode('utf-8', 'replace')
-#                    print 'renamed file: ', newFilePath.encode('utf-8', 'replace')
-# #                    if os.path.isfile(newFilePath):
-# #                        os.remove(newFilePath)
-			# except Exception, e:
-			# 	print e
-#                    if os.path.isfile(oldFilePath):
-#                        print 'Possible duplicate: ', oldFilePath.encode('utf-8', 'replace')
-#                        os.remove(oldFilePath)
-			renameErrorIndex = renameErrorIndex + 1
-#                    print 'Error ', renameErrorIndex, '. ', oldFilePath.encode('utf-8', 'replace')
-#                    pass
+        print songCounter, oldFilePath
+        print newFileName
+        print newFilePath
+        print
 
-#			'''
-	if not renameErrorIndex:
-		print "Success!"
-	else:
-		print 'Had some errors. about ', renameErrorIndex, ' of them :('
+        # this might throw a duplicate error. needs further testing
+        shutil.copy2(oldFilePath, newFilePath)
 
-	print 'Songs processed: ', songCounter
-	  
-	  
+    # for debug info
+    # print 'Songs processed: ', songCounter
+
+
 if __name__ == '__main__':
-	# redirect stdout
-	# sys.stdout = open(os.path.normpath('C:\Users\CristianViorel\Desktop\output.txt'), 'w')
-	renameThem()
+    # redirect stdout
+    # sys.stdout = open(os.path.join(os.environ['USERPROFILE'],
+    # 'Desktop/rename log.txt'), 'w')
+    path = os.path.normpath(u"E:/zzmusic/aac 112/xxx/")
+    newPath = os.path.normpath(u"C:/youtube/")
+
+    renameThem(path, newPath)
